@@ -1,0 +1,8 @@
+{
+  "Configurations": [
+    {
+        "Key": "APP.CONNECTION_STRING",
+        "Value": "Data Source=oracle.e-deploy.local:1521/XE;Persist Security Info=True;User ID=e-deploy;Password=1234;Unicode=True;Direct=True;License Key=U94BB2T3XN+x90/igEv4oVHe7lhWyUMW0SR16lpyNlKonksS3gRcS91U5Miy4z/erCUh6CAV5TYT3GjD4rb35BneLvqyqbcuLaP9uxxSSujCCR4n2i6ZQ0LS51dnlCavTPfRCF9C+eJHzT71pt5IK5XO9XuMkM6AEIH1F0MwZzz67fGn7BQijPEiEVF3gX1+0IDRGlBdY5qb2dySQ+EMaq0o4lIkTIuTJTCk6mKF+xB6S0ogAgsKpmwu4/VBBwv/+6tkirJj27typ/+txXIN4Z0lIG/4QhCcCC1PaqhVDZAZ1/xx2ehnr0cuEdW9pO4OeuKQfEvw07OCjtoIXu5foA=="
+    } 
+  ]
+}

@@ -1,0 +1,14 @@
+/ProjetoPadraoNetCore.WebApi/bin
+/ProjetoPadraoNetCore.WebApi/obj
+/ProjetoPadraoNetCore.Domain/obj
+/ProjetoPadraoNetCore.Domain/bin
+/.vs
+/ProjetoPadraoNetCore.ApplicationService/obj
+/ProjetoPadraoNetCore.ApplicationService/bin
+/ProjetoPadraoNetCore.Repository/obj
+/ProjetoPadraoNetCore.Repository/bin
+/ProjetoPadraoNetCore.Test/bin
+/ProjetoPadraoNetCore.Test/obj
+/packages
+/ProjetoPadraoNetCore.Web/bin
+/ProjetoPadraoNetCore.Web/obj

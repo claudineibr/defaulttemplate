@@ -1,0 +1,34 @@
+﻿{
+    "Configurations": [
+        {
+            "Key": "APP.CONNECTION_STRING",
+            "Value": "Server=localhost;User Id=root;Password=root;Database=projetopadrao"
+        }
+    ],
+    "CacheProfile": [
+        {
+            "Key": "RESPONSECACHE.TIME",
+            "Value": 70 //Minutes
+        },
+        {
+            "Key": "RESPONSECACHE.TIMEOUT",
+            "Value": 200
+        },
+        {
+            "Key": "CACHE.INSTANCE_NAME",
+            "Value": "MerchantV1-"
+        },
+        {
+            "Key": "DEFAULT.STORE",
+            "Value": "0"
+        },
+        {
+            "Key": "CACHE.REDIS.SERVER",
+            "Value": "localhost"
+        },
+        {
+            "Key": "CACHE.REDIS.DATABASE",
+            "Value": "14"
+        }
+    ]
+}
