@@ -4,6 +4,8 @@ cd ProjetoPadraoNetCore
 
 ren %PROJETO_PADRAO%.ApplicationService %1.ApplicationService
 ren %PROJETO_PADRAO%.Domain %1.Domain
+ren %PROJETO_PADRAO%.Web %1.Web
+ren %PROJETO_PADRAO%.Test %1.Test
 ren %PROJETO_PADRAO%.WebApi %1.WebApi
 ren %PROJETO_PADRAO%.Repository %1.Repository
 ren %PROJETO_PADRAO%.CrossCutting.IoC %1.CrossCutting.IoC
@@ -74,6 +76,7 @@ cd %1.WebApi
 ..\fart Controllers\AuthenticationController.cs "%PROJETO_PADRAO%." "%1."
 ..\fart Utilities\SecurityFilter.cs "%PROJETO_PADRAO%." "%1."
 ..\fart Utilities\IHttpContextAccessorExtension.cs "%PROJETO_PADRAO%." "%1."
+..\fart Utilities\CustomDateTimeConverter.cs "%PROJETO_PADRAO%." "%1."
 ..\fart Utilities\TimeSpanConverter.cs "%PROJETO_PADRAO%." "%1."
 ..\fart Configurations\DatabaseSetup.cs "<%PROJETO_PADRAO%DBContext" "<%1Context"
 ..\fart Configurations\DatabaseSetup.cs "%PROJETO_PADRAO%." "%1."

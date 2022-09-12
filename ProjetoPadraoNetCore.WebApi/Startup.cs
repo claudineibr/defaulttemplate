@@ -1,5 +1,4 @@
-﻿using Amazon.S3;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
-using NascorpLib.WebSocketManager;
 using ProjetoPadraoNetCore.WebApi.Configurations;
 using ProjetoPadraoNetCore.WebApi.Utilities;
 using System;
@@ -38,14 +36,13 @@ namespace ProjetoPadraoNetCore.WebApi
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.WriteIndented = false;
+                    o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
                     o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+                    o.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            // Add framework services.
-            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0).ConfigureApiBehaviorOptions(options =>
+            services.AddMvc().ConfigureApiBehaviorOptions(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
@@ -73,6 +70,18 @@ namespace ProjetoPadraoNetCore.WebApi
             //services.AddAWSService<IAmazonS3>();
             services.AddSwaggerSetup();
 
+            string[] corsOrigin = Configuration.GetSection("CorsOrigin").Get<string[]>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(corsOrigin)
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
@@ -97,7 +106,7 @@ namespace ProjetoPadraoNetCore.WebApi
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddDependencyInjectionSetup();
+            services.AddDependencyInjectionSetup(Configuration);
             services.AddDependencyInjectionRabbitSetup(Configuration);
             services.AddIdentitySetup(Configuration);
             services.AddOptions();
@@ -124,15 +133,13 @@ namespace ProjetoPadraoNetCore.WebApi
                 SupportedUICultures = new List<CultureInfo> { ci }
             });
 
-            app.UseCors("AllowAll");
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSwagger();
             app.UseAuthentication();
+
             app.UseRouting();
             app.UseCors();
-
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
