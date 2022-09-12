@@ -1,34 +1,46 @@
 ﻿{
-    "Configurations": [
-        {
-            "Key": "APP.CONNECTION_STRING",
-            "Value": "Server=localhost;User Id=root;Password=root;Database=projetopadrao"
-        }
-    ],
-    "CacheProfile": [
-        {
-            "Key": "RESPONSECACHE.TIME",
-            "Value": 70 //Minutes
-        },
-        {
-            "Key": "RESPONSECACHE.TIMEOUT",
-            "Value": 200
-        },
-        {
-            "Key": "CACHE.INSTANCE_NAME",
-            "Value": "MerchantV1-"
-        },
-        {
-            "Key": "DEFAULT.STORE",
-            "Value": "0"
-        },
-        {
-            "Key": "CACHE.REDIS.SERVER",
-            "Value": "localhost"
-        },
-        {
-            "Key": "CACHE.REDIS.DATABASE",
-            "Value": "14"
-        }
-    ]
+  "Configurations": [
+    {
+      "Key": "APP.CONNECTION_STRING",
+      "Value": "Server=localhost;User Id=root;Password=root;Database=projetopadrao"
+    },
+    {
+      "Key": "CUSTOMER.TOKENCRYPTOGRAPHY",
+      "Value": "qMPugYjeNrHMgUD60QLlDLBWcZRYmp0O"
+    },
+    {
+      "Key": "APP.APIKEY",
+      "Value": "3875c7df-9cd3-443e-ba1c-bab13a7bb366"
+    },
+    {
+      "Key": "APP.ENDPOINT_IMAGES",
+      "Value": "https://s3-sa-east-1.amazonaws.com/buketname"
+    }
+  ],
+  "CacheProfile": [
+    {
+      "Key": "RESPONSECACHE.TIME",
+      "Value": 70 //Minutes
+    },
+    {
+      "Key": "RESPONSECACHE.TIMEOUT",
+      "Value": 200
+    },
+    {
+      "Key": "CACHE.INSTANCE_NAME",
+      "Value": "MerchantV1-"
+    },
+    {
+      "Key": "DEFAULT.STORE",
+      "Value": "0"
+    },
+    {
+      "Key": "CACHE.REDIS.SERVER",
+      "Value": "localhost"
+    },
+    {
+      "Key": "CACHE.REDIS.DATABASE",
+      "Value": "14"
+    }
+  ]
 }

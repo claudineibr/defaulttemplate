@@ -1,11 +1,9 @@
 ﻿namespace ProjetoPadraoNetCore.Domain
 {
-    public class BaseResponse
+    public class BaseResponse<T>
     {
-        public bool error { get; set; }
-
-        public string errorMessage { get; set; }
-
-        public object data { get; set; }
+        public bool Sucess { get; set; }
+        public object Errors { get; set; }
+        public object Data { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace ProjetoPadraoNetCore.Repository.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<MeuServico> builder)
         {
-            builder.ToTable("TB_CUSTOMER");
+            builder.ToTable("TB_MYSERVICE");
             builder.HasKey(c => c.MeuServicoID).HasName("ID_MEUSERVICO");
             builder.Property(c => c.MeuServicoID).HasColumnName("ID_MEUSERVICO").ValueGeneratedOnAdd();
             builder.Property(c => c.MeuServicoNome).HasColumnName("NAME").HasMaxLength(100);

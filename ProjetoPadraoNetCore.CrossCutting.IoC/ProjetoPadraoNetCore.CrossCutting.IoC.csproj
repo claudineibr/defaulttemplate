@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.11" />
+    <PackageReference Include="Nascorp.Library" Version="1.0.8" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjetoPadraoNetCore.ApplicationService\ProjetoPadraoNetCore.ApplicationService.csproj" />
+    <ProjectReference Include="..\ProjetoPadraoNetCore.Domain\ProjetoPadraoNetCore.Domain.csproj" />
+    <ProjectReference Include="..\ProjetoPadraoNetCore.RabbitMQ\ProjetoPadraoNetCore.RabbitMQ.csproj" />
+    <ProjectReference Include="..\ProjetoPadraoNetCore.Repository\ProjetoPadraoNetCore.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

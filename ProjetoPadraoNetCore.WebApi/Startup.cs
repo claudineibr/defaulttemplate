@@ -1,79 +1,87 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Amazon.S3;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.Net.Http.Headers;
-using NascorpLib.Cache.Redis;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using ProjetoPadraoNetCore.ApplicationService;
-using ProjetoPadraoNetCore.Domain.IApplicationService;
-using ProjetoPadraoNetCore.Domain.IRepository;
-using ProjetoPadraoNetCore.Domain.Utilities;
-using ProjetoPadraoNetCore.Repository;
-using ProjetoPadraoNetCore.Repository.Repositories;
+using NascorpLib.WebSocketManager;
+using ProjetoPadraoNetCore.WebApi.Configurations;
+using ProjetoPadraoNetCore.WebApi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
+using System.Text.Json.Serialization;
 
 namespace ProjetoPadraoNetCore.WebApi
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddSwaggerGen(options =>
-            {
-                options.DescribeAllEnumsAsStrings();
-                options.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+            services.AddMvc()
+                .AddJsonOptions(o =>
                 {
-                    Title = "ProjetoPadraoNetCore - Catalog HTTP API",
-                    Version = "v1",
-                    Description = "The Catalog Microservice HTTP API.",
-                    TermsOfService = "Terms Of Service",
-                    Contact = new Swashbuckle.AspNetCore.Swagger.Contact
-                    {
-                        Name = "Claudinei Nascimento",
-                        Email = "claudinei@nascorp.com.br"
-                    },
-                    License = new Swashbuckle.AspNetCore.Swagger.License
-                    {
-                        Name = "Apache 2.0",
-                        Url = "http://www.apache.org/licenses/LICENSE-2.0.html"
-                    }
+                    o.JsonSerializerOptions.WriteIndented = false;
+                    o.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
+            // Add framework services.
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0).ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var problemDetails = new ValidationProblemDetails(context.ModelState)
+                    {
+                        Type = "https://contoso.com/probs/modelvalidation",
+                        Title = "One or more model validation errors occurred.",
+                        Status = StatusCodes.Status400BadRequest,
+                        Detail = "See the errors property for details.",
+                        Instance = context.HttpContext.Request.Path
+                    };
+
+                    return new BadRequestObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" }
+                    };
+                };
             });
+
+            //enable manager websocket
+            //services.AddWebSocketManager();
+
+            //ENABLE SERVICES AWS
+            //services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            //services.AddAWSService<IAmazonS3>();
+            services.AddSwaggerSetup();
 
             services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddConfiguration(Configuration.GetSection("Logging"));
                 loggingBuilder.AddConsole();
-                loggingBuilder.AddDebug();
+                loggingBuilder.AddFilter<ConsoleLoggerProvider>
+                    ((category, level) => category == "A" || level == LogLevel.Critical);
             });
 
-            services.AddDbContext<ProjetoPadraoNetCoreDBContext>(option => option.UseMySql(Config.ConnectionString, mySqlOptions =>
-            {
-                mySqlOptions.ServerVersion(new Version(5, 7, 17), ServerType.MySql); // replace with your Server Version and Type
-            }));
+            services.AddDatabaseSetup(Configuration);
 
             services.AddResponseCaching();
             services.AddResponseCompression(options =>
@@ -87,18 +95,22 @@ namespace ProjetoPadraoNetCore.WebApi
                 options.Level = CompressionLevel.Fastest;
             });
 
-            services.AddScoped<DbContext>(sp => sp.GetService<ProjetoPadraoNetCoreDBContext>());
-            services.AddSingleton<CacheExchange>(provider => new CacheExchange(Config.CacheRedisConnection, Config.CacheRedisDatabase, Config.CacheInstanceName, Config.CacheExpireTime, Config.CacheRedisTimeout));
-            services.AddTransient<IMeuServicoApplicationService, MeuServicoApplicationService>();
-            services.AddTransient<IMeuServicoRepository, MeuServicoRepository>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddDependencyInjectionSetup();
+            services.AddDependencyInjectionRabbitSetup(Configuration);
+            services.AddIdentitySetup(Configuration);
+            services.AddOptions();
+
+            var container = new ContainerBuilder();
+            container.Populate(services);
+
+            return new AutofacServiceProvider(container.Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-
             var defaultDateCulture = "pt-BR";
             var ci = new CultureInfo(defaultDateCulture);
             ci.NumberFormat.NumberDecimalSeparator = ",";
@@ -112,17 +124,31 @@ namespace ProjetoPadraoNetCore.WebApi
                 SupportedUICultures = new List<CultureInfo> { ci }
             });
 
-            app.UseMvc();
+            app.UseCors("AllowAll");
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseSwagger();
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseCors();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
             app.UseDeveloperExceptionPage();
             app.UseSwagger().UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjetoPadraoNetCore");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
             });
 
             app.UseResponseCaching();
             app.Use(async (context, next) =>
             {
-                // For GetTypedHeaders, add: using Microsoft.AspNetCore.Http;
                 context.Response.GetTypedHeaders().CacheControl =
                     new CacheControlHeaderValue()
                     {
@@ -134,6 +160,7 @@ namespace ProjetoPadraoNetCore.WebApi
 
                 await next();
             });
+            app.ConfigureEventBus();
         }
     }
 }

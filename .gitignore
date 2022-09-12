@@ -12,3 +12,8 @@
 /packages
 /ProjetoPadraoNetCore.Web/bin
 /ProjetoPadraoNetCore.Web/obj
+ProjetoPadraoNetCore.CrossCutting.IoC/bin/
+ProjetoPadraoNetCore.CrossCutting.IoC/obj/
+ProjetoPadraoNetCore.RabbitMQ/obj/
+ProjetoPadraoNetCore.WebApi/logs/
+ProjetoPadraoNetCore.RabbitMQ/bin/
