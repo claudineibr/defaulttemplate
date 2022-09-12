@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nascorp.Library" Version="6.0.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ProjetoPadraoNetCore.Domain\ProjetoPadraoNetCore.Domain.csproj" />
   </ItemGroup>
 
