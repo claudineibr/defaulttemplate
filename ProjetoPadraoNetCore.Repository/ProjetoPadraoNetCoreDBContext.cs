@@ -8,9 +8,12 @@ namespace ProjetoPadraoNetCore.Repository
     public class ProjetoPadraoNetCoreDBContext : DbContext
     {
         private readonly ILoggerFactory _loggerFactory;
-        public ProjetoPadraoNetCoreDBContext(DbContextOptions<ProjetoPadraoNetCoreDBContext> options, ILoggerFactory loggerFactory) : base(options)
+        public ProjetoPadraoNetCoreDBContext(
+            DbContextOptions<ProjetoPadraoNetCoreDBContext> options, 
+            ILoggerFactory loggerFactory) 
+            : base(options)
         {
-            this._loggerFactory = loggerFactory;
+            _loggerFactory = loggerFactory;
         }
 
         public DbSet<MeuServico> MeuServico { get; set; }
@@ -29,7 +32,7 @@ namespace ProjetoPadraoNetCore.Repository
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseLoggerFactory(this._loggerFactory);
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
 
         private void ConfigEntity(ModelBuilder modelBuilder)

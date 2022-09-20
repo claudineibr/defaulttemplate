@@ -65,9 +65,6 @@ namespace ProjetoPadraoNetCore.WebApi
             //enable manager websocket
             //services.AddWebSocketManager();
 
-            //ENABLE SERVICES AWS
-            //services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            //services.AddAWSService<IAmazonS3>();
             services.AddSwaggerSetup();
 
             string[] corsOrigin = Configuration.GetSection("CorsOrigin").Get<string[]>();

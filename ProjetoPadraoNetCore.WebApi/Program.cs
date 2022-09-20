@@ -26,7 +26,7 @@ namespace ProjetoPadraoNetCore.WebApi
                 .MinimumLevel.Override("System.Net.Http.HttpClient.NotificationClient.LogicalHandler", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                 .WriteTo.File(@"logs\api_log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 5000000)
+                 .WriteTo.File(@"logs\api_log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 5000000 * 10)
                 .WriteTo.Console()
                 .CreateLogger();
 
@@ -50,7 +50,6 @@ namespace ProjetoPadraoNetCore.WebApi
         .UseStartup<Startup>()
         .SuppressStatusMessages(true) //disable the status messages
         .UseContentRoot(Directory.GetCurrentDirectory())
-        .UseSerilog()
         .ConfigureAppConfiguration((hostContext, config) =>
         {
             config.Sources.Clear();
