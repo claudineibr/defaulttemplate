@@ -8,7 +8,6 @@ using ProjetoPadraoNetCore.ApplicationService.AuthenticationService;
 using ProjetoPadraoNetCore.ApplicationService.LoginService;
 using ProjetoPadraoNetCore.Domain.IApplicationService;
 using ProjetoPadraoNetCore.Domain.IRepository;
-using ProjetoPadraoNetCore.Domain.Utilities;
 using ProjetoPadraoNetCore.Repository.Repositories;
 
 namespace ProjetoPadraoNetCore.CrossCutting.IoC
@@ -25,7 +24,6 @@ namespace ProjetoPadraoNetCore.CrossCutting.IoC
             var cache = new CacheExchange(conf.GetSection("Redis:Connection").Value, int.Parse(conf.GetSection("Redis:Database").Value), conf.GetSection("Redis:InstanceName").Value, int.Parse(conf.GetSection("Redis:ExpireTime").Value), int.Parse(conf.GetSection("Redis:Timeout").Value), options);
             services.AddSingleton<CacheExchange>(provider => cache);
 
-            services.AddSingleton<CacheExchange>(provider => new CacheExchange(Config.CacheRedisConnection, Config.CacheRedisDatabase, Config.CacheInstanceName, Config.CacheExpireTime, Config.CacheRedisTimeout, options));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddTransient<IJwtTokenApplication, JwtTokenApplication>();

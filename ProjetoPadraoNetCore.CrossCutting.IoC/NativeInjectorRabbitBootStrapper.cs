@@ -44,8 +44,6 @@ namespace ProjetoPadraoNetCore.CrossCutting.IoC
                     retryCount = int.Parse(configuration["EventBusRetryCount"]);
 
                 return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
-
-                return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
             });
         }
 
