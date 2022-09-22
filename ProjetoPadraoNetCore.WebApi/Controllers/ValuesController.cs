@@ -15,7 +15,7 @@ namespace ProjetoPadraoNetCore.WebApi.Controllers
 {
     [Authorize(Policy = "Bearer")]
     [SecurityFilter]
-    public class ValuesController : Controller
+    public class ValuesController : ControllerBase
     {
         private readonly IMeuServicoApplicationService _meuServico;
         private readonly CacheExchange _cacheExchange;

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ProjetoPadraoNetCore.WebApi.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : ControllerBase
     {
         private readonly ILoginApplication _loginApplication;
         private readonly ILogger<AuthenticationController> _logger;
